@@ -129,7 +129,7 @@ extension Dictionary: JSONEncodable {
     for (key, value) in self {
       if case let (key as String, value as JSONEncodable) = (key, value) {
         if let newValue = (value as? String) as? JSONEncodable, value is Any {
-          jsonObject[keyString] = newValue.jsonValue 
+          jsonObject[key] = newValue.jsonValue 
         } else {
           jsonObject[key] = value.jsonValue
         }
