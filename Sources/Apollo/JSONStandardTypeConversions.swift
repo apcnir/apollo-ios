@@ -128,20 +128,9 @@ extension Dictionary: JSONEncodable {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {
       if case let (key as String, value as JSONEncodable) = (key, value) {
-        if let newValue = (value as? String) as? JSONEncodable, value is Any {
-          jsonObject[key] = newValue.jsonValue 
-        } else {
-          jsonObject[key] = value.jsonValue
-        }
-
+        jsonObject[key] = value.jsonValue
       } else {
-
-        if let keyString = key as? String, let newValue = (value as? String) as? JSONEncodable { 
-          jsonObject[keyString] = newValue.jsonValue 
-        } else {
-          fatalError("Dictionary is only JSONEncodable if Value is (and if Key is String)")
-        }
-        
+        fatalError("Dictionary is only JSONEncodable if Value is (and if Key is String)")
       }
     }
     return jsonObject
@@ -160,15 +149,29 @@ extension Dictionary: JSONDecodable {
 
 extension Array: JSONEncodable {
   public var jsonValue: JSONValue {
-    return map { element -> JSONValue in
+    return map() { element -> (JSONValue) in
       if case let element as JSONEncodable = element {
         return element.jsonValue
       } else {
-        fatalError("Array is only JSONEncodable if Element is")
+        var castedValue: JSONEncodable? = element as? [String: Any]
+        if castedValue == nil {
+          castedValue = element as? [Any]
+        }
+        if castedValue == nil {
+          castedValue = element as? String
+        }
+        if castedValue == nil {
+          castedValue = element as? Int
+        }
+        if castedValue == nil {
+          castedValue = element as? Double
+        }
+        return castedValue!.jsonValue
       }
     }
   }
 }
+
 
 // Example custom scalar
 
