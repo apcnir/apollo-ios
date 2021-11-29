@@ -128,7 +128,7 @@ extension Dictionary: JSONEncodable {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {
       
-      if let stringValue = valueEntry as? String {
+      if let stringValue = value as? String {
 
         if let keyString = key as? String, let newValue = stringValue as? JSONEncodable { 
             jsonObject[keyString] = newValue.jsonValue 
@@ -143,7 +143,7 @@ extension Dictionary: JSONEncodable {
           fatalError("Dictionary is only JSONEncodable if Value is (and if Key is String)")
         }
       }
-      
+
     }
     return jsonObject
   }
